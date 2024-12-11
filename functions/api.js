@@ -28,17 +28,27 @@ app.use((req, res, next) => {
 
 // Function to get the message from the file (if it exists)
 const getMessage = () => {
-  if (fs.existsSync(messageFilePath)) {
-    const data = fs.readFileSync(messageFilePath, 'utf8');
-    return JSON.parse(data).message;
+  try {
+    if (fs.existsSync(messageFilePath)) {
+      const data = fs.readFileSync(messageFilePath, 'utf8');
+      return JSON.parse(data).message;
+    }
+    return 'hello world!';  // Default message if the file doesn't exist
+  } catch (error) {
+    console.error('Error reading message file:', error);
+    return 'hello world!';  // Return default message in case of error
   }
-  return 'hello world!';  // Default message if the file doesn't exist
 };
 
 // Endpoint to get the current message
 app.get('/.netlify/functions/api', (req, res) => {
-  const message = getMessage();
-  return res.json({ message });
+  try {
+    const message = getMessage();
+    return res.json({ message });
+  } catch (error) {
+    console.error('Error in GET /api:', error);
+    return res.status(500).json({ error: 'Error fetching message' });
+  }
 });
 
 // Endpoint to update the message
