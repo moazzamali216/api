@@ -5,12 +5,15 @@ const app = express();
 
 // Middleware to set CORS headers
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');  // Allow all origins (or specify 'http://localhost:3000' for stricter control)
+  const allowedOrigin = 'http://localhost:3000';  // Your React app origin (can be 'https://your-frontend.com' for production)
+
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigin);  // Only allow requests from the allowed origin
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');  // Allow these methods
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');  // Allow specific headers like Content-Type
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');  // Allow headers like Content-Type
+
   // Handle preflight requests (OPTIONS)
   if (req.method === 'OPTIONS') {
-    return res.status(204).end();  // Return a No Content response for OPTIONS requests
+    return res.status(204).end();  // Return No Content for OPTIONS requests (CORS preflight)
   }
   next();
 });
