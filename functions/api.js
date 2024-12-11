@@ -8,8 +8,8 @@ const app = express();
 // Enable Express to parse JSON bodies
 app.use(express.json());
 
-// Define a path to store the message (optional: you can also store in a database)
-const messageFilePath = path.join(__dirname, 'message.json');
+// Define a path to store the message in the temporary storage
+const messageFilePath = '/tmp/message.json';  // Use the /tmp directory for writable storage
 
 // Middleware to set CORS headers
 app.use((req, res, next) => {
@@ -60,7 +60,7 @@ app.post('/.netlify/functions/api', (req, res) => {
     return res.status(400).json({ error: 'Message is required' });
   }
 
-  // Save the new message to the file
+  // Save the new message to the temporary file
   try {
     fs.writeFileSync(messageFilePath, JSON.stringify({ message }));
     return res.status(200).json({ message: 'Message updated successfully!' });
